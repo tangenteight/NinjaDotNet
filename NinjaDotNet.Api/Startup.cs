@@ -69,6 +69,10 @@ namespace NinjaDotNet.Api
 
             services.AddSingleton<ILoggerService, LoggerService>();
 
+            services.AddScoped<IBlogRepository, BlogRepository>();
+            services.AddScoped<IBlogCommentRepository,BlogCommentRepository>();
+            services.AddScoped<IBlogDetailRepository, BlogDetailRepository>();
+
             services.AddControllers();
         }
 

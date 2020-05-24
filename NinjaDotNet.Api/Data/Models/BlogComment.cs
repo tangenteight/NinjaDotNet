@@ -10,7 +10,6 @@ namespace NinjaDotNet.Api.Data.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CommentId { get; set; }
-        public Guid BlogId { get; set; }
         public Guid Commenter { get; set; }
         public string CommentText { get; set; }
     }

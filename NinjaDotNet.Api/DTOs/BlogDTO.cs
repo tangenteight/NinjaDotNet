@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,4 +18,27 @@ namespace NinjaDotNet.Api.DTOs
         public BlogDetailDTO BlogDetail { get; set; }
         public virtual IList<BlogCommentDTO> Comments { get; set; }
     }
+
+    public class BlogCreateDTO
+    {
+        [Required]
+        public string Title { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public Guid Author { get; set; } = Guid.NewGuid();
+        public string ImageUrl { get; set; } = "";
+        public BlogDetailDTO BlogDetail { get; set; }
+    }
+
+    public class BlogUpdateDTO
+    {
+        [Required]
+        public int BlogId { get; set; }
+        [Required]
+        public string Title { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public Guid Author { get; set; } = Guid.NewGuid();
+        public string ImageUrl { get; set; } = "";
+        public BlogDetailDTO BlogDetail { get; set; }
+    }
+
 }

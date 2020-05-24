@@ -9,9 +9,9 @@ namespace NinjaDotNet.Api.Data
 {
     public class NinjaDbContext : IdentityDbContext
     {
-        private DbSet<Blog> Blogs { get; set; }
-        private DbSet<BlogDetail> BlogDetails { get; set; }
-        private DbSet<BlogComment> BlogComment { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogDetail> BlogDetails { get; set; }
+        public DbSet<BlogComment> BlogComment { get; set; }
 
         public NinjaDbContext(DbContextOptions<NinjaDbContext> options)
             : base(options)
