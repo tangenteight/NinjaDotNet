@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NinjaDotNet.Api</name>
+    </assembly>
+    <members>
+        <member name="T:NinjaDotNet.Api.Controllers.HomeController">
+            <summary>
+            The Home Controller
+            </summary>
+        </member>
+        <member name="M:NinjaDotNet.Api.Controllers.HomeController.Get">
+            <summary>
+            Get Something.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
