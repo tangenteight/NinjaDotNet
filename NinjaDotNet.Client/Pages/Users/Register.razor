@@ -1,0 +1,57 @@
+﻿@page "/Register"
+@using NinjaDotNet.Client.Models
+@using NinjaDotNet.Client.Contracts 
+
+@inject IAuthenticationRepository _authRepo
+@inject NavigationManager _navMan
+
+<div class="card">
+    <h3 class="card-title">Register</h3>
+        @if (isFailed)
+        {
+            <div class="alert alert-danger">
+                <p>Something Went Wrong with the registration attempt</p>
+            </div>
+        }
+        <div class="card-body">
+            <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration">
+                <DataAnnotationsValidator />
+                <ValidationSummary/>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <InputText Id="email" class="form-control" @bind-Value="RegistrationModel.EmailAddress"></InputText>
+                        <ValidationMessage For="@(() => RegistrationModel.EmailAddress)"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <InputText Id="password" type="password" class="form-control" @bind-Value="RegistrationModel.Password"></InputText>
+                        <ValidationMessage For="@(() => RegistrationModel.Password)"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <InputText Id="confirmPassword" type="password" class="form-control" @bind-Value="RegistrationModel.ConfirmPassword"></InputText>
+                        <ValidationMessage For="@(() => RegistrationModel.ConfirmPassword)"></ValidationMessage>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </EditForm>
+        </div>
+</div>
+
+@code
+{
+    private RegistrationModel RegistrationModel = new RegistrationModel();
+    bool isFailed = false;
+    public async Task HandleRegistration()
+    {
+        var response = await _authRepo.Register(RegistrationModel);
+
+        if (response)
+        {
+            _navMan.NavigateTo("/login");
+        }
+        else
+        {
+            isFailed = true;
+        }
+    }
+}

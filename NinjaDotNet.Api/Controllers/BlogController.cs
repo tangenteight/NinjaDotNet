@@ -120,7 +120,7 @@ namespace NinjaDotNet.Api.Controllers
         /// <param name="id">Id of The Blog</param>
         /// <param name="blog">BlogCreateDTO</param>
         /// <returns></returns>
-        [HttpPatch("{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

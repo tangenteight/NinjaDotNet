@@ -33,17 +33,57 @@ namespace NinjaDotNet.Api.Controllers
         }
 
         /// <summary>
+        /// Register an account
+        /// </summary>
+        /// <param name="registerDto"></param>
+        /// <returns></returns>
+        [Route("Register")]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] UserSignInDto registerDto)
+        {
+            try
+            {
+                var userName = registerDto.EmailAddress;
+                var password = registerDto.Password;
+
+                var newUser = new IdentityUser
+                {
+                    Email = userName,
+                    UserName = userName.Substring(0,userName.IndexOf("@"))
+                };
+                var result = await _userManager.CreateAsync(newUser, password);
+                if (!result.Succeeded)
+                {
+                    string errorMessage = "";
+                    foreach (var error in result.Errors)
+                    {
+                        errorMessage += $"\r\n{error}";
+                        return BadRequest(errorMessage);
+                    }
+                }
+                return Ok(new { result.Succeeded });
+                
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// User Login, request some access.
         /// </summary>
-        /// <param name="userDto">{UserName: 'string', Password: 'string' }</param>
+        /// <param name="userDto">{EmailAddress: 'string', Password: 'string' }</param>
         /// <returns></returns>
+        [Route("Login")]
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] UserSignInDto userDto)
         {
             try
             {
-                var userName = userDto.UserName;
+                var userName = userDto.EmailAddress;
                 var password = userDto.Password;
                 var result = await _signInManager.PasswordSignInAsync(userName, password, true, false);
                 if (result.Succeeded)
@@ -81,7 +121,7 @@ namespace NinjaDotNet.Api.Controllers
                 _config["Jwt:Issuer"],
                 claims,
                 null,
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.Now.AddDays(35),
                 signingCredentials: credentials
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);

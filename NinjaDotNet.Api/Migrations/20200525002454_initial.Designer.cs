@@ -120,7 +120,7 @@ namespace NinjaDotNet.Api.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("EmailAddress")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
