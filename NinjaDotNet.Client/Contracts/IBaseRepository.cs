@@ -12,6 +12,6 @@ namespace NinjaDotNet.Client.Contracts
         Task<IList<T>> Get(string url);
         Task<bool> Create(string url, T obj);
         Task<bool> Delete(string url, int id);
-        Task<bool> Update(string url, T obj);
+        Task<bool> Update(string url, int id, T obj);
     }
 }

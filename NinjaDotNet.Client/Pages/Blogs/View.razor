@@ -1,0 +1,41 @@
+﻿@page "/blogs/view/{Id}"
+
+@inject IBlogRepository _blogRepo
+@inject NavigationManager _navManager
+
+@if (Model == null)
+{
+    <Loading Text="Loading..." />
+}
+else
+{
+    <div class="col-md-4">
+        <div class="btn btn-primary" @onclick="BackToList">
+            <span class="oi oi-arrow-circle-left"></span> Back to List
+        </div>
+        <h1>@Model.Title</h1>
+        <p>@Model.CreatedDate</p>
+        <p>@((MarkupString) Model.BlogBody)</p>
+    </div>
+}
+
+
+
+@code
+{
+    [Parameter]
+    public string Id { get; set; }
+
+    private BlogModel Model = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _blogRepo.Get(Endpoints.BlogsEndpoint, int.Parse(Id));
+    }
+
+    private void BackToList()
+    {
+        _navManager.NavigateTo("/blogs/");
+    }
+
+}

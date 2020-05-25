@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NinjaDotNet.Api.Contracts;
 using NinjaDotNet.Api.Data.Models;
@@ -23,12 +25,14 @@ namespace NinjaDotNet.Api.Controllers
         private readonly IBlogRepository _blogRepo;
         private readonly ILoggerService _logger;
         private readonly IMapper _mapper;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BlogController(IBlogRepository blogRepo, ILoggerService logger, IMapper mapper)
+        public BlogController(IBlogRepository blogRepo, ILoggerService logger, IMapper mapper, UserManager<IdentityUser> userManager)
         {
             _blogRepo = blogRepo;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
         /// <summary>
         /// Returns All Blogs For the Current User
@@ -104,6 +108,17 @@ namespace NinjaDotNet.Api.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                 var b = _mapper.Map<Blog>(blog);
+                b.CreatedDate = DateTime.Now;
+
+              
+
+
+                ClaimsPrincipal currentUser = this.User;
+                var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+                IdentityUser user = await _userManager.FindByNameAsync(currentUserName);
+
+                b.Author = Guid.Parse(user.Id);
+
                 var result = await _blogRepo.Create(b);
                 return !result ? StatusCode(500, "Failed To Save") : Created("Successfully Created", new { Blog = b });
             }

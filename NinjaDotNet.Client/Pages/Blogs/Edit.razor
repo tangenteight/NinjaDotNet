@@ -1,0 +1,73 @@
+﻿@page "/blogs/edit/{Id}"
+
+@inject IBlogRepository _blogRepo
+@inject NavigationManager _navManager
+
+@if (Model == null)
+{
+    <Loading Text="Loading..." />
+}
+else
+{
+    <EditForm Model="Model" OnValidSubmit="EditBlog">
+        @if (isFailed)
+        {
+            <div>Failed to Update</div>
+        }
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText @bind-Value="Model.Title" class="form-control" id="title"/>
+        </div>
+        <div class="form-group">
+            <label for="imageUrl">Image Url</label>
+            <InputText @bind-Value="Model.ImageUrl" class="form-control" id="imageUrl"/>
+        </div>
+        <div class="form-group">
+            <label for="blogSynopsis">Synopsis</label>
+            <InputTextArea @bind-Value="Model.Synposis" class="form-control" id="blogSynopsis" />
+        </div>
+        <div class="form-group">
+            <label for="blogBody">Blog Body</label>
+            <InputTextArea @bind-Value="Model.BlogBody" class="form-control" id="blogBody"/>
+        </div>
+        <div class="btn btn-danger" @onclick="CancelEdit">Back to Blogs</div>
+        <button type="submit" class="btn btn-primary">
+            <span class="oi oi-pencil"></span>
+            Update Blog
+        </button>
+    </EditForm>
+}
+
+
+
+@code
+{
+    [Parameter]
+    public string Id { get; set; }
+
+    private bool isFailed = false;
+
+    private BlogModel Model = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await _blogRepo.Get(Endpoints.BlogsEndpoint, int.Parse(Id));
+    }
+
+    private async Task EditBlog()
+    {
+        bool isSuccess = await _blogRepo.Update(Endpoints.BlogsEndpoint, Model.BlogId, Model);
+        if (!isSuccess)
+        {
+            isFailed = true;
+        }
+    }
+
+    private void CancelEdit()
+    {
+        _navManager.NavigateTo("/blogs/");
+    }
+
+}

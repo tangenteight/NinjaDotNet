@@ -16,6 +16,8 @@ namespace NinjaDotNet.Api.DTOs
         public Guid Author { get; set; }
         public string ImageUrl { get; set; }
         public BlogDetailDTO BlogDetail { get; set; }
+        public string BlogBody { get; set; }
+        public string Synopsis { get; set; }
         public virtual IList<BlogCommentDTO> Comments { get; set; }
     }
 

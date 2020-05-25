@@ -1,0 +1,77 @@
+﻿@page "/blogs/create"
+
+@inject IBlogRepository _blogRepo
+@inject NavigationManager _navManager
+
+@if (Model == null)
+{
+    <Loading Text="Loading..." />
+}
+else
+{
+    <EditForm Model="Model" OnValidSubmit="CreateBlog">
+        @if (isFailed)
+        {
+            <FailedHttpMessage Message="Failed to Create"/>
+        }
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText @bind-Value="Model.Title" class="form-control" id="title" />
+        </div>
+        <div class="form-group">
+            <label for="imageUrl">Image Url</label>
+            <InputText @bind-Value="Model.ImageUrl" class="form-control" id="imageUrl" />
+        </div>
+        <div class="form-group">
+            <label for="blogBody">Synopsis</label>
+            <InputTextArea @bind-Value="Model.Synposis" class="form-control" id="blogBody" />
+        </div>
+        <div class="form-group">
+            <label for="blogBody">Blog Body</label>
+            <InputTextArea @bind-Value="Model.BlogBody" class="form-control" id="blogBody" />
+        </div>
+        <div class="btn btn-danger" @onclick="CancelEdit">Back to Blogs</div>
+        <button type="submit" class="btn btn-primary">
+            <span class="oi oi-pencil"></span>
+            Save Blog
+        </button>
+    </EditForm>
+}
+
+
+
+@code
+{
+    [Parameter]
+    public string Id { get; set; }
+
+    private bool isFailed = false;
+
+    private BlogModel Model = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = new BlogModel();
+    }
+
+    private async Task CreateBlog()
+    {
+        bool isSuccess = await _blogRepo.Create(Endpoints.BlogsEndpoint, Model);
+        if (!isSuccess)
+        {
+            isFailed = true;
+        }
+        else
+        {
+            _navManager.NavigateTo("/blogs/");
+        }
+    }
+
+    private void CancelEdit()
+    {
+        _navManager.NavigateTo("/blogs/");
+    }
+
+}
