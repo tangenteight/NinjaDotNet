@@ -31,6 +31,12 @@ namespace NinjaDotNet.Api.Services
             return await Save();
         }
 
+        public async Task<bool> Exists(int id)
+        {
+            bool exists = await _context.Blogs.AnyAsync(i => i.BlogId == id);
+            return exists;
+        }
+
         public async Task<IList<Blog>> FindAll()
         {
             var results = await _context.Blogs.ToListAsync();

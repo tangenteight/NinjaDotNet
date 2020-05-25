@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace NinjaDotNet.Api.DTOs
 {
-    public class BlogDetailDTO
+    public class UserSignInDto
     {
-        public int BlogDetailId { get; set; }
-        public string Synopsis { get; set; }
-        public string BodyHtml { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }

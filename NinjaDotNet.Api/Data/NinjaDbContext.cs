@@ -10,7 +10,7 @@ namespace NinjaDotNet.Api.Data
     public class NinjaDbContext : IdentityDbContext
     {
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<BlogDetail> BlogDetails { get; set; }
+        //public DbSet<BlogDetail> BlogDetails { get; set; }
         public DbSet<BlogComment> BlogComment { get; set; }
 
         public NinjaDbContext(DbContextOptions<NinjaDbContext> options)

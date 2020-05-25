@@ -9,6 +9,6 @@ namespace NinjaDotNet.Api.Contracts
 {
     public interface IBlogRepository : IRepositoryBase<Blog>
     {
-        
+        Task<bool> Exists(int id);
     }
 }

@@ -16,7 +16,9 @@ namespace NinjaDotNet.Api.Data.Models
         public DateTime CreatedDate { get; set; }
         public Guid Author { get; set; }
         public string ImageUrl { get; set; }
-        public virtual BlogDetail BlogDetail { get; set; }
+        public string Synposis { get; set; }
+        public string BlogBody { get; set; }
+        //public virtual BlogDetail BlogDetail { get; set; }
         public virtual IList<BlogComment> Comments { get; set; } 
     }
 }

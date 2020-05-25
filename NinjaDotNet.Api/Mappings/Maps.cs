@@ -18,8 +18,6 @@ namespace NinjaDotNet.Api.Mappings
             CreateMap<Blog, BlogCreateDTO>().ReverseMap();
             CreateMap<Blog, BlogUpdateDTO>().ReverseMap();
 
-            CreateMap<BlogDetail, BlogDetailDTO>().ReverseMap();
-
             CreateMap<BlogComment, BlogCommentDTO>().ReverseMap();
         }
     }

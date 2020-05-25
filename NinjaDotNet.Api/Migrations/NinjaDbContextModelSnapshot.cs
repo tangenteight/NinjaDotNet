@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NinjaDotNet.Api.Data;
 
-namespace NinjaDotNet.Api.Data.Migrations
+namespace NinjaDotNet.Api.Migrations
 {
     [DbContext(typeof(NinjaDbContext))]
-    [Migration("20200524043650_Blogging")]
-    partial class Blogging
+    partial class NinjaDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,8 +229,8 @@ namespace NinjaDotNet.Api.Data.Migrations
                     b.Property<Guid>("Author")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("BlogDetailId")
-                        .HasColumnType("int");
+                    b.Property<string>("BlogBody")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -240,12 +238,13 @@ namespace NinjaDotNet.Api.Data.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Synposis")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BlogId");
-
-                    b.HasIndex("BlogDetailId");
 
                     b.ToTable("Blog");
                 });
@@ -257,10 +256,7 @@ namespace NinjaDotNet.Api.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("BlogId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("BlogId1")
+                    b.Property<int?>("BlogId")
                         .HasColumnType("int");
 
                     b.Property<string>("CommentText")
@@ -271,30 +267,9 @@ namespace NinjaDotNet.Api.Data.Migrations
 
                     b.HasKey("CommentId");
 
-                    b.HasIndex("BlogId1");
+                    b.HasIndex("BlogId");
 
                     b.ToTable("BlogComment");
-                });
-
-            modelBuilder.Entity("NinjaDotNet.Api.Data.Models.BlogDetail", b =>
-                {
-                    b.Property<int>("BlogDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid>("BlogId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BodyHtml")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Synopsis")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BlogDetailId");
-
-                    b.ToTable("BlogDetails");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -348,18 +323,11 @@ namespace NinjaDotNet.Api.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NinjaDotNet.Api.Data.Models.Blog", b =>
-                {
-                    b.HasOne("NinjaDotNet.Api.Data.Models.BlogDetail", "BlogDetail")
-                        .WithMany()
-                        .HasForeignKey("BlogDetailId");
-                });
-
             modelBuilder.Entity("NinjaDotNet.Api.Data.Models.BlogComment", b =>
                 {
                     b.HasOne("NinjaDotNet.Api.Data.Models.Blog", null)
                         .WithMany("Comments")
-                        .HasForeignKey("BlogId1");
+                        .HasForeignKey("BlogId");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NinjaDotNet.Api.Contracts;
@@ -34,6 +35,7 @@ namespace NinjaDotNet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -57,6 +59,7 @@ namespace NinjaDotNet.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -86,6 +89,7 @@ namespace NinjaDotNet.Api.Controllers
         /// <param name="blog">BlogCreateDTO</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -117,6 +121,7 @@ namespace NinjaDotNet.Api.Controllers
         /// <param name="blog">BlogCreateDTO</param>
         /// <returns></returns>
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -130,11 +135,9 @@ namespace NinjaDotNet.Api.Controllers
 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
-
-                var checkBlog = await _blogRepo.FindById(id);
-                if (checkBlog == null)
+                if (!await _blogRepo.Exists(id))
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
 
                 var b = _mapper.Map<Blog>(blog);
@@ -152,9 +155,9 @@ namespace NinjaDotNet.Api.Controllers
         /// Updates Blog Record
         /// </summary>
         /// <param name="id">Id of The Blog</param>
-        /// <param name="blog">BlogCreateDTO</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
