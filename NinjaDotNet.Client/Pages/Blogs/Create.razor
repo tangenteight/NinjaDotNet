@@ -1,7 +1,10 @@
 ﻿@page "/blogs/create"
+@using System.IO
+@attribute [Authorize(Roles = "Administrator")]
 
 @inject IBlogRepository _blogRepo
 @inject NavigationManager _navManager
+@inject IFileUpload _fileUpload
 
 @if (Model == null)
 {
@@ -20,10 +23,7 @@ else
             <label for="title">Title</label>
             <InputText @bind-Value="Model.Title" class="form-control" id="title" />
         </div>
-        <div class="form-group">
-            <label for="imageUrl">Image Url</label>
-            <InputText @bind-Value="Model.ImageUrl" class="form-control" id="imageUrl" />
-        </div>
+
         <div class="form-group">
             <label for="blogBody">Synopsis</label>
             <InputTextArea @bind-Value="Model.Synposis" class="form-control" id="blogBody" />
@@ -33,6 +33,13 @@ else
             <InputTextArea @bind-Value="Model.BlogBody" class="form-control" id="blogBody" />
         </div>
         <div class="btn btn-danger" @onclick="CancelEdit">Back to Blogs</div>
+        <div class="form-group">
+            <InputFile OnChange="HandleFileSelection"></InputFile>
+        </div>
+        @if (!string.IsNullOrEmpty(imageDataUrl))
+        {
+            <img src="@imageDataUrl" />
+        }
         <button type="submit" class="btn btn-primary">
             <span class="oi oi-pencil"></span>
             Save Blog
@@ -48,6 +55,9 @@ else
     public string Id { get; set; }
 
     private bool isFailed = false;
+    private IFileListEntry file;
+    private string imageDataUrl;
+    private MemoryStream msFile;
 
     private BlogModel Model = null;
 
@@ -58,6 +68,15 @@ else
 
     private async Task CreateBlog()
     {
+        if (!string.IsNullOrEmpty(imageDataUrl))
+        {
+            var ext = Path.GetExtension(file.Name);
+            var picId = Guid.NewGuid().ToString().Replace("-", "") + ext;
+            Model.ImageUrl = picId;
+            await _fileUpload.UploadFile(file, msFile, picId);
+        }
+
+
         bool isSuccess = await _blogRepo.Create(Endpoints.BlogsEndpoint, Model);
         if (!isSuccess)
         {
@@ -66,6 +85,29 @@ else
         else
         {
             _navManager.NavigateTo("/blogs/");
+        }
+    }
+
+    private async Task HandleFileSelection(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            var fileName = file.Name;
+            if (fileName.Contains("jpg") || fileName.Contains("png") || fileName.Contains("jpeg"))
+            {
+                msFile = new MemoryStream();
+                await file.Data.CopyToAsync(msFile);
+                var reader = new StreamReader(msFile);
+                var imgBase64Data = Convert.ToBase64String(msFile.ToArray());
+                imageDataUrl = $"data:image/png;base64,{imgBase64Data}";
+
+
+            }
+            else
+            {
+                imageDataUrl = "";
+            }
         }
     }
 

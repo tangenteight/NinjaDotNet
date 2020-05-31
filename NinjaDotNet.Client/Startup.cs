@@ -43,6 +43,7 @@ namespace NinjaDotNet.Client
             services.AddScoped<AuthenticationStateProvider>(p =>
                 p.GetRequiredService<ApiAuthenticationStateProvider>());
             services.AddTransient<IBlogRepository, BlogRepository>();
+            services.AddTransient<IFileUpload, FileUpload>();
             
 
             services.AddScoped<JwtSecurityTokenHandler>();
